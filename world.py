@@ -24,6 +24,7 @@ class land(object):
         self.data = []
         self.name = f.readline()[1:]
         debug('Name of the world : '+self.name)
+        self.grounds=[];
         l = f.readline()        
         while l != '':
             if 'size' in l:
@@ -33,22 +34,30 @@ class land(object):
                 debug('Size : ' + str(size))
             elif 'ground' in l and 'nb' in l:
                 self.nbGrounds=int(f.readline())
+            elif 'grounds' in l:
+                for i in range(self.nbGrounds):
+                    g = f.readline().split(' ')
+                    self.grounds.append(case(g[0], bool(g[1])))
+                #TODO : add exception if file is not correct
             elif 'land' in l:
+                if len(self.grounds)==0:
+                    debug('Grounds undefined before land reading')
+                    exit(0)
                 for i in range(self.height):
                     line = f.readline().split(' ')
                     self.data.append([])                   
                     for j in range(self.width):
-                        self.data[i].append(line[j])
+                        self.data[i].append(self.grounds[int(line[j])])
                     #TODO : raise exception if the file is not correct
                 debug('land'+str(self.data))
             l = f.readline()
                 
         
-        
+#TODO : test if modifying a case after initializing, change the case in the land        
 
 class case(object):
     def __init__(self,image,passThrough):
-        pass
+        self.passThrough = passThrough
 
 if __name__ == "__main__":
     print('Test of world package')

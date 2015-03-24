@@ -4,6 +4,10 @@
 #nbgrounds
 2
 
+#grounds
+default1.jpg 1
+default2.jpg 0
+
 #land
 1 1 1 1 1 1 1 1 1 1
 1 0 0 0 0 0 0 0 0 1
@@ -16,6 +20,3 @@
 1 0 0 0 0 0 0 0 0 1
 1 1 1 1 1 1 1 1 1 1
 
-#grounds
-default1.jpg 1
-default2.jpg 0

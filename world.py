@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 """
-world v0.1
+World API
+@version: 0.1
+@author: maxgreat
+
 
 Contain class about land, case and world
 
 """
-DEBUG=False
-
-def debug(s):
-    if(DEBUG):
-        print(s)
-
+from debugOut import debug
+from kivy.uix.image import Image
 
 class land(object):
     def __init__(self, filename):
@@ -48,6 +47,7 @@ class land(object):
                     self.data.append([])                   
                     for j in range(self.width):
                         self.data[i].append(self.grounds[int(line[j])])
+                        #self.data[i].append(int(line[j]))
                     #TODO : raise exception if the file is not correct
                 debug('land'+str(self.data))
             l = f.readline()
@@ -55,8 +55,10 @@ class land(object):
         
 #TODO : test if modifying a case after initializing, change the case in the land        
 
-class case(object):
+class case(Image):
     def __init__(self,image,passThrough):
+        Image.__init__(self, allow_stretch=True, keep_ratio=False)        
+        self.image=image
         self.passThrough = passThrough
 
 if __name__ == "__main__":

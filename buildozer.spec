@@ -48,7 +48,7 @@ requirements = kivy
 orientation = all
 
 # (bool) Indicate if the application should be fullscreen or not
-fullscreen = 0
+fullscreen = 1
 
 
 #
@@ -62,10 +62,10 @@ fullscreen = 0
 #android.api = 14
 
 # (int) Minimum API required (8 = Android 2.2 devices)
-#android.minapi = 8
+android.minapi = 8
 
 # (int) Android SDK version to use
-#android.sdk = 21
+android.sdk = 21
 
 # (str) Android NDK version to use
 #android.ndk = 9c
@@ -144,7 +144,7 @@ fullscreen = 0
 [buildozer]
 
 # (int) Log level (0 = error only, 1 = info, 2 = debug (with command output))
-log_level = 2
+log_level = 1
 
 # (int) Display warning if buildozer is run as root (0 = False, 1 = True)
 warn_on_root = 1

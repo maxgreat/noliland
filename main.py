@@ -9,6 +9,8 @@ from kivy.core.image import Image
 from kivy.uix.widget import Widget
 from kivy.clock import Clock
 from kivy.graphics import Rectangle, Ellipse
+from kivy.core.window import Window #for keyboard input
+
 GRAPHICS=True #False if we don't use kivy or pygame yet
 
 import world
@@ -25,6 +27,11 @@ def drawWorld(m): #only for debug
                 print '1' if m.data[i][j].image == 'default1.jpg' else '2' ,
             print(' ')
             
+#cast value in the given interval
+def castInterval(interval, value):
+        return min([ interval[1], max([ interval[0], value]) ])
+
+
             
 MAP=world.land('data/lands/default2') #charge the default land      
 
@@ -44,63 +51,82 @@ MAP=world.land('data/lands/default2') #charge the default land
 class MyWorld(Widget):
     def __init__(self):
         Widget.__init__(self)
-        self.nbCases=10
+        
+        #KeyBoard handling
+        self._keyboard = Window.request_keyboard(self._keyboard_closed, self, 'text')
+        self._keyboard.bind(on_key_down=self._on_keyboard_down)
+        
+        self.nbCases=15 #nb Case to draw on screen
         #initialize the player
-        dataPerso = {'position':[5,5],'health':10,'name':'LittlePlayer'}
+        dataPerso = {'position':[5,5],'health':10,'name':'LittlePlayer'} #should depend on the map
         self.player=Player(dataPerso)
+
         global MAP
         debug('Texture:'+MAP.textureFile)
-        self.texture=Image('data/images/'+MAP.textureFile).texture
+        self.texture=Image('data/images/'+MAP.textureFile).texture #load texture for the map
+        self.tex = [[]]*MAP.nbGrounds
+        for i in range(MAP.nbGrounds):
+            grid = MAP.grounds[i].image
+            self.tex[i] = self.texture.get_region(grid[0], grid[1], grid[2], grid[3])
+        
         self.drawImages
-    def update(self,dt):
+        
+    def update(self,dt): #for each frame
         self.drawImages()
 
 
-    def on_touch_down(self,touch):
-        #TODO : BUG
-        newTouch=[touch.x/self.nbCases, touch.y/self.nbCases]
-        print 'Touch :', touch.pos
-        print 'NewTouch :',newTouch
-        print 'Player:', self.player.position
-        if newTouch[0] < self.player.position[0]:
-            self.player.position[0] -= 1
-        elif newTouch[0] > self.player.position[0]:
-            self.player.position[0] += 1
+    # def on_touch_down(self,touch): #touch on the screen
+        # #TODO : BUG
+        # newTouch=[touch.x/self.nbCases, touch.y/self.nbCases]
+        # print 'Touch :', touch.pos
+        # print 'NewTouch :',newTouch
+        # print 'Player:', self.player.position
+        # if newTouch[0] < self.player.position[0]:
+            # self.player.position[0] -= 1
+        # elif newTouch[0] > self.player.position[0]:
+            # self.player.position[0] += 1
 
-    def drawImages(self):
+    def _keyboard_closed(self):
+        debug('Keyboard have been closed')
+        self._keyboard.unbind(on_key_down=self._on_keyboard_down)
+        self._keyboard = None
+
+        
+    def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
+        #TODO : a table to store every key, boolean for pressed or not
+        if keycode[1] == 'up' and self.player.position[0] < MAP.height-1: #&& self.canDoUp:
+            self.player.move([1,0])
+        elif keycode[1] == 'down' and self.player.position[0] > 1:
+            self.player.move([-1,0])
+        elif keycode[1] == 'left' and self.player.position[1] > 1 : 
+            self.player.move([0,-1])
+        elif keycode[1] == 'right' and self.player.position[1] < MAP.width-1:
+            self.player.move([0,1])
+        else:
+            return False
+        return True
+        
+    def drawImages(self): #draw the map
         global MAP
-        size=[self.size[0]/self.nbCases, self.size[1]/self.nbCases]
-        self.player.size=size
-        tex = [[]]*MAP.nbGrounds
-        for i in range(MAP.nbGrounds):
-            grid = MAP.grounds[i].image
-            tex[i] = self.texture.get_region(grid[0], grid[1], grid[2], grid[3])
+        sizeOfCase=[self.size[0]/self.nbCases, self.size[1]/self.nbCases] #Careful : width then height
+        self.player.size=sizeOfCase
+        
         with self.canvas:
-            for i in range(self.nbCases):
-                for j in range(self.nbCases):
-                    posOnScreen=[i*size[0],j*size[1]]
-                    posOnMap=[min([MAP.height-1,max([0,self.player.position[0]-i+self.nbCases/2])]), min([MAP.width-1,max([0,self.player.position[1]-j+self.nbCases/2])])]
-                    debug('PosOnMap:'+str(posOnMap))
-                    Rectangle(texture=tex[MAP.data[posOnMap[0]][posOnMap[1]]], pos=posOnScreen, size=size)
-            Ellipse(pos=[size[0]*self.nbCases/2,size[1]*self.nbCases/2],size=size)
-        #with self.player.canvas:
-        #    Ellipse(pos=self.pos, size=self.size)
-#class NoLiGame(GridLayout):
-#    def __init__(self):  
-#        GridLayout.__init__(self,cols=10,rows=10)
-#        self.call = 0
-#        self.reverse=True
-#        global GRID
-#        for i in range(10):
-#            for j in range(10):
-#                self.add_widget(GRID[i][j])                
-#    def update(self,dt):
-#        pass
+            for line in range(self.nbCases):
+                for col in range(self.nbCases):
+                    posOnScreen=[col*sizeOfCase[0],line*sizeOfCase[1]] #width then height
+                    debug('Position on screen'+str(posOnScreen))
+                    posOnMap={}
+                    posOnMap['width']= castInterval( [0,MAP.width-1], self.player.position[1]-col+self.nbCases/2)
+                    posOnMap['height']= castInterval( [0,MAP.height-1], self.player.position[0]-line+self.nbCases/2)
+                    debug('Position Player:'+str(self.player.position))
+                    debug('Position on map'+str(posOnMap))
+                    Rectangle(texture=self.tex[MAP.data[posOnMap['height']][posOnMap['width']]], pos=posOnScreen, size=sizeOfCase)
+            Ellipse(pos=[ (sizeOfCase[0]*self.nbCases+sizeOfCase[0])/2 , (sizeOfCase[1]*self.nbCases+sizeOfCase[1])/2],size=sizeOfCase) #drawPlayer
+
 
 class NoLiApp(App):
     def build(self):
-#        gridImages()
-#        game = NoLiGame()
         game = MyWorld()
         Clock.schedule_interval(game.update, 1.0 / 30.0)
         return game

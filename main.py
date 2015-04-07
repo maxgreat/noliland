@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # -*- coding: utf-8 -*-
 """
 Created on Tue Mar 24 19:26:25 2015
@@ -75,6 +76,7 @@ class MyWorld(Widget):
         self.drawImages()
 
 
+    #TODO for android !
     # def on_touch_down(self,touch): #touch on the screen
         # #TODO : BUG
         # newTouch=[touch.x/self.nbCases, touch.y/self.nbCases]
@@ -134,4 +136,3 @@ class NoLiApp(App):
 if __name__ == "__main__":
     NoLiApp().run()
     #drawWorld(map1)
-

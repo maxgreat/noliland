@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # -*- coding: utf-8 -*-
 """
 Created on Tue Mar 24 19:26:25 2015
@@ -11,6 +10,7 @@ from kivy.uix.widget import Widget
 from kivy.clock import Clock
 from kivy.graphics import Rectangle, Ellipse
 from kivy.core.window import Window #for keyboard input
+from kivy.core.text import Label as CoreLabel
 
 GRAPHICS=True #False if we don't use kivy or pygame yet
 
@@ -114,16 +114,25 @@ class MyWorld(Widget):
         self.player.size=sizeOfCase
         
         with self.canvas:
-            for line in range(self.nbCases):
+            for line in reversed(range(self.nbCases)):
                 for col in range(self.nbCases):
+                    
                     posOnScreen=[col*sizeOfCase[0],line*sizeOfCase[1]] #width then height
-                    debug('Position on screen'+str(posOnScreen))
+                    #debug('Position on screen'+str(posOnScreen))
                     posOnMap={}
                     posOnMap['width']= castInterval( [0,MAP.width-1], self.player.position[1]-col+self.nbCases/2)
                     posOnMap['height']= castInterval( [0,MAP.height-1], self.player.position[0]-line+self.nbCases/2)
-                    debug('Position Player:'+str(self.player.position))
-                    debug('Position on map'+str(posOnMap))
+                    #debug('Position Player:'+str(self.player.position))
+                    #debug('Position on map'+str(posOnMap))
+                    
+                    #add for debug
+                    my_label = CoreLabel()
+                    my_label.text = str(posOnMap['width']) + ':' + str(posOnMap['height'])
+                    my_label.padding = 30.0
+                    my_label.refresh()
+                    
                     Rectangle(texture=self.tex[MAP.data[posOnMap['height']][posOnMap['width']]], pos=posOnScreen, size=sizeOfCase)
+                    Rectangle(texture=my_label.texture,  pos=posOnScreen, size=sizeOfCase)
             Ellipse(pos=[ (sizeOfCase[0]*self.nbCases+sizeOfCase[0])/2 , (sizeOfCase[1]*self.nbCases+sizeOfCase[1])/2],size=sizeOfCase) #drawPlayer
 
 

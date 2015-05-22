@@ -1,0 +1,24 @@
+[level]
+name = default1
+mapTexture = data/images/defaultTexture.jpg
+size = 10, 10
+map =   # # # # # # # # # #
+        # . . . . . . . . #
+        # . . . . . . . . #
+        # . . . . . . . . #
+        # . . . . . . . . #
+        # . . . . . . . . #
+        # . . . . . . . . #
+        # . . . . . . . . #
+        # . . . . . . . . #
+        # # # # # # # # # #
+        
+[.]
+name = grass
+tile = 1, 0
+
+[#]
+name = brickWall
+tile = 0, 0
+blockWalk = True
+blockFly = False

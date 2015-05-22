@@ -27,7 +27,18 @@ def castInterval(interval, value):
 
 
             
-MAP=world.land('data/lands/default2') #charge the default land      
+ #charge the default land      
+SCREEN_SIZE_W = 255
+SCREEN_SIZE_H = 255
+
+
+class game(object):
+    def __init__(self, land='data/lands/default2'):
+        pygame.init()
+        self.screen = pygame.display.set_mode((SCREEN_SIZE_W,SCREEN_SIZE_H)) #TODO : verify order
+        self.screen.fill((255, 255, 255)) #fill the screen in white -> not useful
+        self.MAP=world.land('data/lands/default.map')
+
 
 
 if __name__ == "__main__":

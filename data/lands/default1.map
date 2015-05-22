@@ -1,12 +1,16 @@
+[tiledata]
+tile_width = 150
+tile_height = 150
+
 [level]
 name = default1
-mapTexture = data/images/defaultTexture.jpg
+maptexture = data/images/defaultTexture.jpg
 size = 10, 10
 map =   # # # # # # # # # #
         # . . . . . . . . #
         # . . . . . . . . #
         # . . . . . . . . #
-        # . . . . . . . . #
+        # . . a . . . . . #
         # . . . . . . . . #
         # . . . . . . . . #
         # . . . . . . . . #
@@ -20,5 +24,9 @@ tile = 1, 0
 [#]
 name = brickWall
 tile = 0, 0
-blockWalk = True
-blockFly = False
+blockWalk = true
+
+[a]
+name = menu
+tile = 1, 0
+sprite = save_point.png
